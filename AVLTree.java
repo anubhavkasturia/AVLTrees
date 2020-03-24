@@ -64,7 +64,7 @@ public class AVLTree{
       return lsize+rsize+1;
   
   }
-    private static int getBalance(Node node){
+    private int getBalance(Node node){
         int lh=-1;
         int rh=-1;
 
@@ -73,7 +73,7 @@ public class AVLTree{
 
         return lh-rh;
     }
-    private static int getHeight(Node node){
+    private int getHeight(Node node){
         int lh=-1;
         int rh=-1;
 
@@ -82,8 +82,100 @@ public class AVLTree{
 
         return Math.max(lh, rh)+1;
     }
-}
 
+    public Node addData(Node node, int data){
+
+        if(node==null){
+            Node datavalue=new Node(data, null, null);
+            return datavalue;
+        }
+
+        if(data>node.data){
+            node.right=addData(node.right, data);
+        }
+        else if(data<node.data){
+            node.left=addData(node.left, data);
+        }
+       
+        node.height=getHeight(node);
+        node.balance=getBalance(node);
+
+        node=fix(node);
+        return node;
+
+    }
+    private Node fix(Node node){
+        if(getBalance(node)>1){ //left heavy hai
+            if(getBalance(node.left)>0){
+                //rr
+                node=rightrotation(node);
+            }else{
+                //lr
+                node=leftrotation(node.left);
+                node=rightrotation(node);
+            }
+        }
+        else if(getBalance(node)<-1){ //right heavy hai
+            if(getBalance(node.right)>0){ // samecondition<0 toh yha //ll
+                //rl
+                node=rightrotation(node.right);
+                node=leftrotation(node);
+            }else{
+                //ll
+                node=leftrotation(node);
+            }
+            
+            }
+        return node;
+        }
+    
+    private Node rightrotation(Node node){
+        Node nnode=node.left; //saves the address of B attached to A(the root node)
+        
+        Node temp=nnode.right;//saves location of  Br attached to B ?Save toh krlia par hataya thodi?
+        
+        nnode.right=node;//right rotation B top pe A right mai
+        
+        node.left=temp;//?yha pe change krdi location isilie update hogya?
+        
+        node.height=getHeight(node); //gets height of A
+        node.balance=getBalance(node); //gets balanceFactor of A
+
+        node.height=getHeight(nnode); //gets height of B
+        node.balance=getBalance(nnode); //gets balanceFactor of B
+
+
+
+        return nnode;
+    }
+    private  Node leftrotation(Node node){
+        Node nnode=node.right; //saves the address of B attached to A(the root node)
+        
+        Node temp=nnode.left;//saves location of  Br attached to B ?Save toh krlia par hataya thodi?
+        
+        nnode.left=node;//left rotation B top pe A left mai
+        
+        node.right=temp;//?yha pe change krdi location isilie update hogya?
+        
+        node.height=getHeight(node); //gets height of A
+        node.balance=getBalance(node); //gets balanceFactor of A
+
+        node.height=getHeight(nnode); //gets height of B
+        node.balance=getBalance(nnode); //gets balanceFactor of B
+
+
+
+        return nnode;
+    }
+    
+    
+    
+    
+    
+    
+    }
+
+ 
     
 
 
